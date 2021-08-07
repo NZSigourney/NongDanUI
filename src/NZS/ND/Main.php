@@ -154,7 +154,7 @@ class Main extends PluginBase implements Listener{
 			if($r == null){
 				return true;
 			}
-			switch{$r){
+			switch($r){
 				case 1:
 				$player->sendMessage($this->nd . " §l§aBạn vừa đọc xong update, Còn gì thắc mắc hãy liên hệ cho BQT nhé!");
 				break;
@@ -162,12 +162,13 @@ class Main extends PluginBase implements Listener{
 				return $this->welcome($player);
 				break;
 			}
-			$f->setTitle($this->nd);
-			$f->setContent("§l§f[§c+§f] §aCó gì mới ở bản cập nhập này?:\nSau những ngày vắng bóng khiến cho Prison bị đình truệ,\nBan Quản trị ngay lập tức nhận ra vấn đề này.\nNhanh chóng giao cho NZS (Tobi Kun) Thiết kế lại lối chơi và thay đổi hoàn toàn!\n§a§lNội dung:\n§l§f[§c+§f]§a Chúng ta nhập vai vào Người nông dân dưới sự Cai trị của Phe trục trong WW2 (Đức Quốc Xã),\nNhiều hệ thống nhà tù đã mọc lên như năm. Buộc người dân phải làm việc cho Phe trục để đổi lại Cái quyền lợi cơ bản thời chiến!\nNhiều Quân Kháng chiến Đã bị dập Tắt trong vô vọng và phải bị tù đày\n§l§cHệ Thống nhà tù:\n §l§f[§c+§f]§a Đây là hệ thống trong tù có 1 không 2 tại §6".$this->getServer()->getMotd()."§a Bạn sẽ lao động cực khổ khi đã vào đây và là nơi ác mộng của bạn bất đầu\nNhững tên cai ngục sẽ khiến bạn khốn khổ tột cùng, Nếu không muốn vào đây, hãy chăm chỉ và đừng chống lại Phe Nazis!");
-			$f->addButton1("Đã Hiểu", "https://cdn4.iconfinder.com/data/icons/religion-science/30/buddha-128.png");
-			$f->addButton2("Quay Lại");
-			$f->sendToPlayer($player);
-		}
+		});
+		$f->setTitle($this->nd);
+		$f->setContent("§l§f[§c+§f] §aCó gì mới ở bản cập nhập này?:\nSau những ngày vắng bóng khiến cho Prison bị đình truệ,\nBan Quản trị ngay lập tức nhận ra vấn đề này.\nNhanh chóng giao cho NZS (Tobi Kun) Thiết kế lại lối chơi và thay đổi hoàn toàn!\n§a§lNội dung:\n§l§f[§c+§f]§a Chúng ta nhập vai vào Người nông dân dưới sự Cai trị của Phe trục trong WW2 (Đức Quốc Xã),\nNhiều hệ thống nhà tù đã mọc lên như năm. Buộc người dân phải làm việc cho Phe trục để đổi lại Cái quyền lợi cơ bản thời chiến!\nNhiều Quân Kháng chiến Đã bị dập Tắt trong vô vọng và phải bị tù đày\n§l§cHệ Thống nhà tù:\n §l§f[§c+§f]§a Đây là hệ thống trong tù có 1 không 2 tại §6".$this->getServer()->getMotd()."§a Bạn sẽ lao động cực khổ khi đã vào đây và là nơi ác mộng của bạn bất đầu\nNhững tên cai ngục sẽ khiến bạn khốn khổ tột cùng, Nếu không muốn vào đây, hãy chăm chỉ và đừng chống lại Phe Nazis!");
+		$f->addButton1("Đã Hiểu", "https://cdn4.iconfinder.com/data/icons/religion-science/30/buddha-128.png");
+		$f->addButton2("Quay Lại");
+		$f->sendToPlayer($player);
+	}
 	
 	public function tutorial($player){
 		$a = $this->getServer()->getPluginManager()->getPlugin("FormAPI");
