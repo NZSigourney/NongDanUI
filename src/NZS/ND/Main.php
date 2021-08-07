@@ -34,7 +34,7 @@ class Main extends PluginBase implements Listener{
 			$player->sendMessage($this->nd . "§l§a Chào mừng bạn đến với §6".$svName."§a! Hãy tiếp tục chơi vui vẻ nếu bạn muốn nhé !");
 			$this->welcome($player);
 		}else{
-			$this->getServer()->broadcastMessage("§l§aNgười chơi §e".$name."§a Lần đầu vào Server Bắt đầu cày cuốc đi nào!");
+			$this->getServer()->broadcastMessage($svName . ": §l§aNgười chơi §e".$name."§a Lần đầu vào Server Bắt đầu cày cuốc đi nào!");
 			$this->welcome($player);
 			return true;
 		}
@@ -48,22 +48,23 @@ class Main extends PluginBase implements Listener{
 				return true;
 			}
 			if(!(isset($args[0]))){
-				$player->sendMessage($this->nd . "§6 List Command:\n §c+ §a/farmer help\n§c+§a /farmer open");
-				return true;
+				$player->sendMessage($this->nd . /**"§6 List Command:\n §c+ §a/farmer help\n§c+§a /farmer open"*/ "§cĐiền vào ô trống!");;
+				//return true;
 			}else{
-				if($args[0] == "open" or "Open"){
+				if(!($args[0] == "open" or "Open")){
 					$this->welcome($player);
 				}else{
 					$player->sendMessage($this->nd . "§l§c Không có lệnh này!");
-				    return false;
+				    //return false;
 				}
-				if($args[0] == "help" or "Help"){
+				if(!($args[0] == "help" or "Help")){
 				    $player->sendMessage($this->nd . "§l§5List command: Trang 1/1\n§c+§a open\n§c+§a Help");
 				}else{
 				    $player->sendMessage($this->nd . "§l§c Không có lệnh này!");
-				    return false;
+				    //return false;
 				}
 			}
+			return false;
 		}
 		return true;
 	}
@@ -118,10 +119,9 @@ class Main extends PluginBase implements Listener{
 		$f->setTitle($this->nd);
 		$f->addLabel("§l§c• §aChange Gameplay + Big Update 2.0");
 		$f->addLabel("§l§f[§c+§f] §aCó gì mới ở bản cập nhập này?:\nSau những ngày vắng bóng khiến cho Prison bị đình truệ,\nBan Quản trị ngay lập tức nhận ra vấn đề này.\nNhanh chóng giao cho NZS (Tobi Kun) Thiết kế lại lối chơi cũng như thay đổi hoàn toàn mới cơ cấu chơi!");
-		$f->addLabel("§a§lNội dung:\n§l§f[§c+§f]§a Chúng ta nhập vai vào Người nông dân dưới sự Cai trị của Phe trục trong WW2 (Đức Quốc Xã),\nNhiều hệ thống nhà tù đã mọc lên như năm. Buộc người dân phải làm việc cho Phe trục để đổi lại Cái quyền lợi cơ bản thời chiến!\nNhiều Quân Kháng chiến Đã bị dập Tắt trong vô vọng và phải bị tù đày!");
-		$f->addLabel("§l§cHệ Thống nhà tù:\n §l§f[§c+§f]§a Đây là hệ thống trong tù có 1 không 2 tại §6".$this->getServer()->getMotd()."§a Bạn sẽ lao động cực khổ khi đã vào đây và là nơi ác mộng của bạn bất đầu\nNhững tên cai ngục sẽ khiến bạn khốn khổ tột cùng, Nếu không muốn vào đây, hãy chăm chỉ và đừng chống lại Phe Nazis!");
+		$f->addLabel("§a§lNội dung:\n§l§f[§c+§f]§a Chúng ta nhập vai vào Người nông dân dưới sự Cai trị của Phe trục trong WW2\n(Đức Quốc Xã),\nNhiều hệ thống nhà tù đã mọc lên như nấm. Buộc người dân phải làm việc cho Phe trục để đổi lại Cái quyền lợi cơ bản thời chiến!\nNhiều Quân Kháng chiến Đã bị dập Tắt trong\n vô vọng và phải bị tù đày!");
+		$f->addLabel("§l§cHệ Thống nhà tù:\n §l§f[§c+§f]§a Đây là hệ thống trong tù có 1 không 2 tại §6".$this->getServer()->getMotd()."§a Bạn sẽ lao động cực khổ khi đã vào đây và là nơi ác mộng của bạn bất đầu\nNhững tên cai ngục sẽ khiến bạn khốn khổ tột cùng,\n Nếu không muốn vào đây, hãy chăm chỉ và đừng chống lại Phe Nazis!");
 		$f->sendToPlayer($player);
-		return true;
 	}
 	
 	/**public function update($player){
@@ -218,8 +218,8 @@ class Main extends PluginBase implements Listener{
 		});
 		$f->setTitle($this->nd);
 		$f->addLabel("§l§c•§a Hệ thống Ngục tù:");
-		$f->addLabel("§l§f[§c•§f]§a Ngục tù tâm tối tồn tại những nhân cách tàn ác, Bạn buộc phải học cách sống sót trong môi trường khắc nghiệt như thế\nĐể có thể trở thành người mạnh nhấy trong ngục");
-		$f->addLabel("§l§f[§c•§f]§a Mọi người sẽ phải lao động khổ sai để có thể ra tù sớm hơn dự tính thông qua §c(bail)\n§aHoặc có thể vượt ngục bằng cách hạ gục cai ngục thông qua NPC đuocẹ giấu kín đâu đó ở trong tù!");
+		$f->addLabel("§l§f[§c•§f]§a Ngục tù tâm tối tồn tại những nhân cách tàn ác, Bạn buộc phải học cách sống sót\ntrong môi trường khắc nghiệt như thế\nĐể có thể trở thành người mạnh nhất\ntrong ngục");
+		$f->addLabel("§l§f[§c•§f]§a Mọi người sẽ phải lao động khổ sai để có thể ra tù sớm hơn dự tính thông qua §c(bail)\n§aHoặc có thể vượt ngục bằng cách hạ gục cai ngục thông qua NPC được giấu kín đâu đó ở trong tù!");
 		$f->addLabel("§aGood Luck!");
 		$f->sendToPlayer($player);
 	}
