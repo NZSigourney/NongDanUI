@@ -1,0 +1,20 @@
+name: NDSystem
+main: NZS\ND\Main
+api:
+ - 3.0.0
+ - 3.2.0
+version: 1.0-BETA
+depends: FormAPI
+description: "Hệ thống Nông Dân"
+commands:
+ farmer:
+  description: "Hệ thống nông dân"
+  usage: /farmer <help/item>
+  default: true
+ arrest:
+  description: "Bắt giam"
+  usage: /arrest <name>
+  default: op
+permissions:
+ nd.permission.farmer:
+  default: true
