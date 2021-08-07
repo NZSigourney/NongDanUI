@@ -9,12 +9,5 @@ description: "Hệ thống Nông Dân"
 commands:
  farmer:
   description: "Hệ thống nông dân"
-  usage: /farmer <help/item>
-  default: true
- arrest:
-  description: "Bắt giam"
-  usage: /arrest <name>
-  default: op
-permissions:
- nd.permission.farmer:
+  usage: /farmer <help/open>
   default: true

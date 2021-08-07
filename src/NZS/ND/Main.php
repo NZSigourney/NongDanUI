@@ -41,54 +41,31 @@ class Main extends PluginBase implements Listener{
 	}
 	
 	public function onCommand(CommandSender $player, Command $cmd, string $label, array $args): bool{
-		if($cmd->getName() == "farmer"){
-			
+		switch($cmd->getName()){
+			case "farmer":
 			if(!($player instanceof Player)){
-				$this->getServer()->getLogger()->warning("Use in game!");
+				$this->getLogger()->warning("Use in game!");
 				return true;
 			}
-			
 			if(!(isset($args[0]))){
-				$player->sendMessage($this->nd . "§l§a Hút Cỏ nhiều quá quên nhập chữ à?");
+				$player->sendMessage($this->nd . "§6 List Command:\n §c+ §a/farmer help\n§c+§a /farmer open");
 				return true;
+			}else{
+				if($args[0] == "open" or "Open"){
+					$this->welcome($player);
+				}else{
+					$player->sendMessage($this->nd . "§l§c Không có lệnh này!");
+				    return false;
+				}
+				if($args[0] == "help" or "Help"){
+				    $player->sendMessage($this->nd . "§l§5List command: Trang 1/1\n§c+§a open\n§c+§a Help");
+				}else{
+				    $player->sendMessage($this->nd . "§l§c Không có lệnh này!");
+				    return false;
+				}
 			}
-			
-			if(!($args[0] == "help")){
-				$player->sendMessage($this->nd ." §6List Command:\n§c[§a+§c] §6help\n§c[§a+§c] §6item");
-				return true;
-			}
-			
-			if($args[0] == "item"){
-				//updating
-				$player->sendMessage("Bảo trì!");
-			}
-			return false;
-			//break;
 		}
 		return true;
-		
-		/**if($cmd->getName() == "arrest"){
-			if(empty($args[0]) || empty($args[1])){
-				$player->sendMessage("§l§cVui lòng điền vào ô trống !");
-			}else{
-				$name = $player->getName();
-				$player->sendMessage("§cđang cập nhâp!");
-				return false;
-			}
-			return true;
-		}
-		return true;*/
-		
-		switch($cmd->getName()){
-			case "arrest":
-			if(!(isset($args[0]))){
-				$player->sendMessage($this->nd . "§l§a Hút Cỏ nhiều quá quên nhập chữ à?");
-			}else{
-				$player->sendMessage("Bảo trì");
-				return false;
-			}
-			return true;
-		}
 	}
 	
 	public function welcome($player){
@@ -121,7 +98,7 @@ class Main extends PluginBase implements Listener{
 		$f->sendToPlayer($player);
 	}
 	
-	/**public function update($player){
+	public function update($player){
 		$a = $this->getServer()->getPluginManager()->getPlugin("FormAPI");
 		$f = $a->createCustomForm(Function (Player $p, $d){
 			/**$r = $d;
@@ -133,7 +110,7 @@ class Main extends PluginBase implements Listener{
 				case 0:
 				$this->welcome($player);
 				break;
-			}
+			}*/
 			if($d == 0){
 				return $this->welcome($player);
 			}
@@ -145,9 +122,9 @@ class Main extends PluginBase implements Listener{
 		$f->addLabel("§l§cHệ Thống nhà tù:\n §l§f[§c+§f]§a Đây là hệ thống trong tù có 1 không 2 tại §6".$this->getServer()->getMotd()."§a Bạn sẽ lao động cực khổ khi đã vào đây và là nơi ác mộng của bạn bất đầu\nNhững tên cai ngục sẽ khiến bạn khốn khổ tột cùng, Nếu không muốn vào đây, hãy chăm chỉ và đừng chống lại Phe Nazis!");
 		$f->sendToPlayer($player);
 		return true;
-	}*/
+	}
 	
-	public function update($player){
+	/**public function update($player){
 		$a = $this->getServer()->getPluginManager()->getPlugin("FormAPI");
 		$f = $a->createModalForm(Function (Player $data, $d){
 			$r = $d;
@@ -165,10 +142,10 @@ class Main extends PluginBase implements Listener{
 		});
 		$f->setTitle($this->nd);
 		$f->setContent("§l§f[§c+§f] §aCó gì mới ở bản cập nhập này?:\nSau những ngày vắng bóng khiến cho Prison bị đình truệ,\nBan Quản trị ngay lập tức nhận ra vấn đề này.\nNhanh chóng giao cho NZS (Tobi Kun) Thiết kế lại lối chơi và thay đổi hoàn toàn!\n§a§lNội dung:\n§l§f[§c+§f]§a Chúng ta nhập vai vào Người nông dân dưới sự Cai trị của Phe trục trong WW2 (Đức Quốc Xã),\nNhiều hệ thống nhà tù đã mọc lên như năm. Buộc người dân phải làm việc cho Phe trục để đổi lại Cái quyền lợi cơ bản thời chiến!\nNhiều Quân Kháng chiến Đã bị dập Tắt trong vô vọng và phải bị tù đày\n§l§cHệ Thống nhà tù:\n §l§f[§c+§f]§a Đây là hệ thống trong tù có 1 không 2 tại §6".$this->getServer()->getMotd()."§a Bạn sẽ lao động cực khổ khi đã vào đây và là nơi ác mộng của bạn bất đầu\nNhững tên cai ngục sẽ khiến bạn khốn khổ tột cùng, Nếu không muốn vào đây, hãy chăm chỉ và đừng chống lại Phe Nazis!");
-		$f->addButton1("Đã Hiểu", "https://cdn4.iconfinder.com/data/icons/religion-science/30/buddha-128.png");
-		$f->addButton2("Quay Lại");
+		$f->setButton1("Đã Hiểu", "https://cdn4.iconfinder.com/data/icons/religion-science/30/buddha-128.png");
+		$f->setButton2("Quay Lại");
 		$f->sendToPlayer($player);
-	}
+	}*/
 	
 	public function tutorial($player){
 		$a = $this->getServer()->getPluginManager()->getPlugin("FormAPI");
@@ -207,10 +184,52 @@ class Main extends PluginBase implements Listener{
 	
 	public function nongdan($player){
 		$a = $this->getServer()->getPluginManager()->getPlugin("FormAPI");
-		$f = $a->createCustomForm(Function (Player $player, $d,){
+		$f = $a->createCustomForm(Function (Player $player, $d){
 		});
 		$f->setTitle($this->nd);
-		$f->addLabel("Updating");
+		$f->addLabel("§l¶c• §aNew §cGame§aPlay Prison RPG 2.0");
+		$f->addLabel("§l§f[§c•§f]§a Đây là mô phỏng RPG nông dân, Bạn sẽ vào một người nông dân cày bừa để kiếm cơm qua ngày\nDưới sự cai trị của Chính Quyền Đức Quốc Xã, bạn sẽ tìm mọi cách để sống sót và trốn khỏi nhà tù nếu bị bắt");
+		$f->addLabel("§l§f[§c•§f]§a Hãy tạo nên một trận chiến riêng bạn! Bạn có thể thành lập 1 phe phái riêng để chống phá lẫn nhau\nCứ tới 1 thời điểm nhất định §cHệ thống Tù nhân§a Sẽ xảy ra xung đột và để lọt những tên tù nhân ra bên ngoài\nDo đó bạn cần phải tạo ra 1 pháo đài phong thủ riêng bạn!");
+		$f->addLabel("§l§f[§c•§f]§c Lời khuyên: §aHãy tạo nên 1 liên minh Mạnh nếu bạn không muốn bị ăn hiếp!");
+		$f->sendToPlayer($player);
+	}
+	
+	public function phanbon($player){
+		$a = $this->getServer()->getPluginManager()->getPlugin("FormAPI");
+		$f = $a->createCustomForm(Function (Player $player, $d){
+		});
+		$f->setTitle($this->nd);
+		$f->addLabel("§l§c•§a Không có gì đâu, đơn giản chỉ là... à mà thôi dang update mà hihi");
+		$f->sendToPlayer($player);
+	}
+	
+	public function weather($player){
+		$a = $this->getServer()->getPluginManager()->getPlugin("FormAPI");
+		$f = $a->createCustomForm(Function (Player $player, $d){
+		});
+		$f->setTitle($this->nd);
+		$f->addLabel("§l§c•§a Không có gì đâu, đơn giản chỉ là... à mà thôi dang update mà hihi");
+		$f->sendToPlayer($player);
+	}
+	
+	public function prison($player){
+		$a = $this->getServer()->getPluginManager()->getPlugin("FormAPI");
+		$f = $a->createCustomForm(Function (Player $player, $d){
+		});
+		$f->setTitle($this->nd);
+		$f->addLabel("§l§c•§a Hệ thống Ngục tù:");
+		$f->addLabel("§l§f[§c•§f]§a Ngục tù tâm tối tồn tại những nhân cách tàn ác, Bạn buộc phải học cách sống sót trong môi trường khắc nghiệt như thế\nĐể có thể trở thành người mạnh nhấy trong ngục");
+		$f->addLabel("§l§f[§c•§f]§a Mọi người sẽ phải lao động khổ sai để có thể ra tù sớm hơn dự tính thông qua §c(bail)\n§aHoặc có thể vượt ngục bằng cách hạ gục cai ngục thông qua NPC đuocẹ giấu kín đâu đó ở trong tù!");
+		$f->addLabel("§aGood Luck!");
+		$f->sendToPlayer($player);
+	}
+	
+	public function listStaff($player){
+		$a = $this->getServer()->getPluginManager()->getPlugin("FormAPI");
+		$f = $a->createCustomForm(Function (Player $player, $d){
+		});
+		$f->setTitle($this->nd);
+		$f->addLabel("§l¶f[§c•§f]§c Owner: §aDbgamingvn2\n§l¶f[§c•§f]§6 DEV: §aTobi (NZSigourney), LetTIHL\n§l¶f[§c•§f]§eb Police: \n§l¶f[§c•§f]§p Helper:");
 		$f->sendToPlayer($player);
 	}
 }
