@@ -209,5 +209,7 @@ class Main extends PluginBase implements Listener{
 		$f = $a->createCustomForm(Function (Player $player, $d,){
 		});
 		$f->setTitle($this->nd);
-		$f->addLabel("
+		$f->addLabel("Updating");
+		$f->sendToPlayer($player);
+	}
 }
