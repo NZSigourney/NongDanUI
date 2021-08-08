@@ -5,13 +5,19 @@ namespace NZS\ND;
 use pocketmine\plugin\pluginBase;
 use pocketmine\command\{Command, CommandSender, ConsoleCommandSender};
 use pocketmine\{Player, Server};
-//Event
+// Event
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
-//confjg
+// config
 use pocketmine\utils\Config;
 // other plugin
 use jojoe7777\FormAPI;
+// Item
+use pocketmine\item\Item;
+use pocketmine\item\enchantment\EnchantmentInstance;
+use pocketmine\item\enchantment\Enchantment;
+// Math
+use pocketmine\math\Vector3;
 
 class Main extends PluginBase implements Listener{
 	
@@ -35,6 +41,7 @@ class Main extends PluginBase implements Listener{
 			$this->welcome($player);
 		}else{
 			$this->getServer()->broadcastMessage($svName . ": §l§aNgười chơi §e".$name."§a Lần đầu vào Server Bắt đầu cày cuốc đi nào!");
+			$this->onInventory($player);
 			$this->welcome($player);
 			return true;
 		}
@@ -51,22 +58,28 @@ class Main extends PluginBase implements Listener{
 				$player->sendMessage($this->nd . /**"§6 List Command:\n §c+ §a/farmer help\n§c+§a /farmer open"*/ "§cĐiền vào ô trống!");;
 				//return true;
 			}else{
-				if(!($args[0] == "open" or "Open")){
+				if($args[0] == "open" or "Open"){
 					$this->welcome($player);
 				}else{
 					$player->sendMessage($this->nd . "§l§c Không có lệnh này!");
 				    //return false;
 				}
-				if(!($args[0] == "help" or "Help")){
+				if($args[0] == "help" or "Help"){
 				    $player->sendMessage($this->nd . "§l§5List command: Trang 1/1\n§c+§a open\n§c+§a Help");
 				}else{
 				    $player->sendMessage($this->nd . "§l§c Không có lệnh này!");
 				    //return false;
 				}
+
+				if($args[0] == "item"){
+					$this->onInventory($player);
+				}else{
+					$player->sendMessage($this->nd . "§l§c Không có lệnh này!");
+				}
 			}
-			return false;
+			return true;
 		}
-		return true;
+		//return true;
 	}
 	
 	public function welcome($player){
@@ -229,7 +242,27 @@ class Main extends PluginBase implements Listener{
 		$f = $a->createCustomForm(Function (Player $player, $d){
 		});
 		$f->setTitle($this->nd);
-		$f->addLabel("§l¶f[§c•§f]§c Owner: §aDbgamingvn2\n§l¶f[§c•§f]§6 DEV: §aTobi (NZSigourney), LetTIHL\n§l¶f[§c•§f]§eb Police: \n§l¶f[§c•§f]§p Helper:");
+		$f->addLabel("§l§f[§c•§f]§c Owner: §aDbgamingvn2\n§l§f[§c•§f]§6 DEV: §aTobi (NZSigourney), LetTIHL\n§l§f[§c•§f]§b Cai Ngục: \n§l§f[§c•§f]§p Helper:");
 		$f->sendToPlayer($player);
+	}
+
+	public function onInventory($player){
+		$item = Item::get(290,0,1);
+		$item1 = Item::get(295,0,1);
+		$inv = $player->getInventory();
+		$item->setCustomName("§l§c• §aHoe Adventure§c •");
+		//$item->setLore(array("§l§e• §6Unbreaking II\n§e•§6 Autorepair I"));
+		//$item->addEnchantment(new EnchantmentInstance(Enchantment::getEnchantment(34), 1));
+		//$item->addEnchantment(new EnchantmentInstance(Enchantment::getEnchantment(70), 1));
+		//$item->addEnchantment(new EnchantmentInstance(Enchantment::getEnchantment(26), 2));
+		if($inv->contains($item) || $inv->contains($item1)){
+			$player->sendMessage($this->nd . "§l§a Bạn đã có món đồ này trong túi đồ rồi!");
+		}else{
+			$inv->addItem($item);
+			$inv->addItem($item1);
+			$player->sendMessage($this->nd . "§l§a Bạn đã nhận được Cuốc ".$item->getCustomName()."§a Và Hạt giống!");
+			return false;
+		}
+		return true;
 	}
 }
