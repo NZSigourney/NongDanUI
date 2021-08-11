@@ -18,6 +18,9 @@ use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\Enchantment;
 // Math
 use pocketmine\math\Vector3;
+// Level Sound
+/**use pocketmine\level\Level;
+use pocketmine\sound\Sound;*/
 
 class Main extends PluginBase implements Listener{
 	
@@ -27,7 +30,7 @@ class Main extends PluginBase implements Listener{
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		$this->getLogger()->info("Nông Dân System V1 by NZS (Tobi)");
 		@mkdir($this->getDataFolder());
-		//$this->op = new Config($this->getDataFolder(), "Ops.yml", Config::YAML);
+		$this->op = new Config($this->getDataFolder(). "Ops.yml", Config::YAML);
 		$this->items = new Config($this->getDataFolder(). "Items.yml", Config::YAML);
 	}
 	
@@ -55,9 +58,14 @@ class Main extends PluginBase implements Listener{
 			$player->sendMessage("§aCó Vip rồi còn ham");
 		}else{
 			if($name == "OopsEnder" or "dbgamingvn2" or " AokoAsami199" or "NZSigourney"){
-				$player->setOp();
-				/**$this->op->set($name => "Name");
-				$this->op->save();*/
+				//$player->setOp();
+				if($this->op->exists($name)){
+					$player->sendMessage("§l§f[§c•§f] §cThông tin Op: ". $this->op->get("Operator"));
+					//return false;
+				}else{
+					$this->op->set($name, ["Operator" => $name]);
+				    $this->op->save();
+				}
 				return false;
 			}
 
@@ -66,6 +74,10 @@ class Main extends PluginBase implements Listener{
 			}
 			return true;
 		}
+
+		//Sound
+		/**$sound = "https:://www.youtube.com/watch?v=wJwQQHNGn5k&t=30s";
+		$player->getLevel()->addSound($sound);*/
 	}
 	
 	public function onCommand(CommandSender $player, Command $cmd, string $label, array $args): bool{
