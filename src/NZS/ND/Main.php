@@ -18,9 +18,8 @@ use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\Enchantment;
 // Math
 use pocketmine\math\Vector3;
-// Level Sound
-/**use pocketmine\level\Level;
-use pocketmine\sound\Sound;*/
+// PurePerms
+use _64FF00\PurePerms\PurePerms;
 
 class Main extends PluginBase implements Listener{
 	
@@ -29,9 +28,16 @@ class Main extends PluginBase implements Listener{
 	public function onEnable(): void{
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		$this->getLogger()->info("Nông Dân System V1 by NZS (Tobi)");
+
+		//Config
 		@mkdir($this->getDataFolder());
 		$this->op = new Config($this->getDataFolder(). "Ops.yml", Config::YAML);
 		$this->items = new Config($this->getDataFolder(). "Items.yml", Config::YAML);
+		$this->listOp = new Config($this->getDataFolder(). "ListOps.yml", Config::YAML);
+
+		//Pureperms
+		$this->pp = $this->getServer()->getPluginManager()->getPlugin("PurePerms");
+		//$this->rank = $this->pp->getUserDataMgr()->getGroup();
 	}
 	
 	public function onLoad(){
@@ -42,9 +48,19 @@ class Main extends PluginBase implements Listener{
 		$player = $ev->getPlayer();
 		$name = $player->getName();
 		$svName = $this->getServer()->getMotd();
+		if(!$this->listOp->exists($name))
+		{
+			$rank = $this->pp->getUserDataMgr()->getGroup($player)->getName();
+			foreach($this->getServer()->getOnlinePlayers() as $p){
+				if($p->isOp()){
+					$this->listOp->set($name, $rank);
+			        $this->listOp->save();
+				}
+			}
+		}
+
 		if($player->hasPlayedBefore() == true){
 			$player->sendMessage($this->nd . "§l§a Chào mừng bạn đến với §6".$svName."§a! Hãy tiếp tục chơi vui vẻ nếu bạn muốn nhé !");
-			$this->welcome($player);
 		}else{
 			$this->getServer()->broadcastMessage($svName . ": §l§aNgười chơi §e".$name."§a Lần đầu vào Server Bắt đầu cày cuốc đi nào!");
 			$this->onInventory($player);
@@ -53,9 +69,8 @@ class Main extends PluginBase implements Listener{
 		}
 
 		// setOp
-		if($player->isOp()){
+		/**if($player->isOp()){
 			$player->sendTitle("§aCon cặc");
-			$player->sendMessage("§aCó Vip rồi còn ham");
 		}else{
 			if($name == "OopsEnder" or "dbgamingvn2" or " AokoAsami199" or "NZSigourney"){
 				//$player->setOp();
@@ -73,7 +88,7 @@ class Main extends PluginBase implements Listener{
 				$player->sendPopup("Ops.yml has been saved!");
 			}
 			return true;
-		}
+		}*/
 
 		//Sound
 		/**$sound = "https:://www.youtube.com/watch?v=wJwQQHNGn5k&t=30s";
@@ -96,22 +111,22 @@ class Main extends PluginBase implements Listener{
 				$this->welcome($player);
 			}else{
 				$player->sendMessage($this->nd . "§l§c Không có lệnh này!");
-				//return false;
+				return false;
 			}
 
 			if($args[0] == "help"/** or "Help"*/){
 			    $player->sendMessage($this->nd . "§l§5List command: Trang 1/1\n§c+§a open\n§c+§a Help");
 			}else{
 			    $player->sendMessage($this->nd . "§l§c Không có lệnh này!");
-			    //return false;
+			    return false;
 			}
 
 			if($args[0] == "item"){
 				$this->onInventory($player);
 			}else{
 				$player->sendMessage($this->nd . "§l§c Không có lệnh này!");
+				return false;
 			}
-			return false;
 		}
 		return true;
 	}
@@ -121,6 +136,8 @@ class Main extends PluginBase implements Listener{
 		$f = $a->createSimpleForm(Function (Player $player, $d){
 			$r = $d;
 			if($r == null){
+				//return false;
+				$player->sendMessage("§c");
 			}
 			switch($r){
 				case 0:
@@ -130,7 +147,7 @@ class Main extends PluginBase implements Listener{
 				$this->tutorial($player);
 				break;
 				case 2:
-				$this->listStaff($player);
+				$this->danhsach($player);
 				break;
 				case 3:
 				$player->sendMessage("§c");
@@ -270,13 +287,64 @@ class Main extends PluginBase implements Listener{
 		$f->addLabel("§aGood Luck!");
 		$f->sendToPlayer($player);
 	}
-	
-	public function listStaff($player){
+
+	public function danhsach($player){
+		$a = $this->getServer()->getPluginManager()->getPlugin("FormAPI");
+		$f = $a->createSimpleForm(Function (Player $player, $d){
+			$r = $d;
+			if($r == null){	
+			}
+			switch($r){
+				case 0:
+				$this->listST($player);
+				break;
+				case 1:
+				$this->listStaff($player);
+				break;
+			}
+		});
+
+		$f->setTitle($this->nd);
+		$f->setContent("§l§c• §aDanh Sách Quản Ngục & Quản trị viên");
+		$f->addButton("§l§f[§e•§f]§c Cai Ngục & Quản Trị", 0);
+		$f->addButton("§l§f[§e•§f]§a Các quản trị hiện đang onlỉne", 1);
+		$f->sendToPlayer($player);
+	}
+
+	public function listST($player){
 		$a = $this->getServer()->getPluginManager()->getPlugin("FormAPI");
 		$f = $a->createCustomForm(Function (Player $player, $d){
 		});
 		$f->setTitle($this->nd);
 		$f->addLabel("§l§f[§c•§f]§c Owner: §aDbgamingvn2\n§l§f[§c•§f]§6 DEV: §aTobi (NZSigourney), LetTIHL\n§l§f[§c•§f]§b Cai Ngục: \n§l§f[§c•§f]§p Helper:");
+		$f->sendToPlayer($player);
+	}
+	
+	public function listStaff($player){
+		$rank = $this->pp->getUserDataMgr()->getGroup($player)->getName();
+		$list = $this->listOp->getAll();
+		$m = "";
+		//$m1 = "";
+		if($rank == "Owner" or "Admin" or "Police" or "OP"){
+			$i = 1;
+			$name = /**$this->listOp->get($player->getName());*/ $player->getName();
+			foreach($this->getServer()->getOnlinePlayers() as $player){
+				if($player->isOp()){
+					$m .= "§l§aList STAFF ".$i." :§b ".$name." §d→ §f".$rank;
+				}
+				if($i >= 10){
+					break;
+				}
+				++$i;
+			}
+		}
+
+		$a = $this->getServer()->getPluginManager()->getPlugin("FormAPI");
+		$f = $a->createCustomForm(Function (Player $player, $d){
+		});
+		$f->setTitle($this->nd);
+		//$f->addLabel("§l§f[§c•§f]§c Owner: §aDbgamingvn2\n§l§f[§c•§f]§6 DEV: §aTobi (NZSigourney), LetTIHL\n§l§f[§c•§f]§b Cai Ngục: \n§l§f[§c•§f]§p Helper:");
+		$f->addLabel($m);
 		$f->sendToPlayer($player);
 	}
 

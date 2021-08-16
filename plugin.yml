@@ -3,8 +3,10 @@ main: NZS\ND\Main
 api:
  - 3.0.0
  - 3.2.0
-version: 1.0-BETA
-depends: FormAPI
+version: 2.0.0
+depends:
+ - FormAPI
+ - PurePerms
 description: "Hệ thống Nông Dân"
 commands:
  farmer:
