@@ -20,6 +20,9 @@ use pocketmine\item\enchantment\Enchantment;
 use pocketmine\math\Vector3;
 // PurePerms
 use _64FF00\PurePerms\PurePerms;
+// Sound
+use pocketmine\level\sound\DoorSound;
+use pocketmine\level\sound\ClickSound;
 
 class Main extends PluginBase implements Listener{
 	
@@ -31,17 +34,24 @@ class Main extends PluginBase implements Listener{
 
 		//Config
 		@mkdir($this->getDataFolder());
-		$this->op = new Config($this->getDataFolder(). "Ops.yml", Config::YAML);
-		$this->items = new Config($this->getDataFolder(). "Items.yml", Config::YAML);
-		$this->listOp = new Config($this->getDataFolder(). "ListOps.yml", Config::YAML);
+		$this->items = new Config($this->getDataFolder(). "Item.yml", Config::YAML);
+		$this->listOp = new Config($this->getDataFolder(). "ListSTAFF.yml", Config::YAML);
+		$this->pol = new Config($this->getDataFolder(). "Police.yml", Config::YAML);
 
 		//Pureperms
 		$this->pp = $this->getServer()->getPluginManager()->getPlugin("PurePerms");
 		//$this->rank = $this->pp->getUserDataMgr()->getGroup();
 	}
+
+	public function onDisable(){
+		$this->listOp->save();
+		$this->items->save();
+		$this->pol->save();
+		$this->getServer()->getLogger()->info($this->nd . "§bSaved Data YML [Item, ListSTAFF, Police] Success");
+	}
 	
 	public function onLoad(){
-		$this->getServer()->getLogger()->info("§l§f<§e+§f>§a NDSystem §f<§e+§f>\n VERSION 1-0BETA\n CODE BY TOBI/NZS");
+		$this->getServer()->getLogger()->info("§l§f<§e+§f>§a NDSystem §f<§e+§f>\n VERSION 3.0\n CODE BY TOBI/NZS");
 	}
 	
 	public function onJoin(PlayerJoinEvent $ev){
@@ -53,8 +63,18 @@ class Main extends PluginBase implements Listener{
 			$rank = $this->pp->getUserDataMgr()->getGroup($player)->getName();
 			foreach($this->getServer()->getOnlinePlayers() as $p){
 				if($p->isOp()){
+					$this->getServer()->getLogger()->info("§bSaved data username: ".$name." With rank ".$rank." !");
 					$this->listOp->set($name, $rank);
 			        $this->listOp->save();
+				}
+
+				if($rank == "Police"){
+					$this->getServer()->getLogger()->info("§bSaved data username: ".$name." => Police, At Plugin_Data\NDSystem\ListStaff!");
+					$this->pol->set($name, ["Cai Ngục" => true]);
+					$this->pol->save();
+					/**if($this->pol->get("Cai Ngục") == False ){
+						return $this->listST($player);
+					}*/
 				}
 			}
 		}
@@ -83,7 +103,6 @@ class Main extends PluginBase implements Listener{
 				}
 				return false;
 			}
-
 			if($this->op->exists($name)){
 				$player->sendPopup("Ops.yml has been saved!");
 			}
@@ -108,27 +127,28 @@ class Main extends PluginBase implements Listener{
 			}
 
 			if($args[0] == "open"/** or "Open"*/){
+				$player->getLevel()->addSound(new DoorSound($player));
 				$this->welcome($player);
 			}else{
 				$player->sendMessage($this->nd . "§l§c Không có lệnh này!");
-				return false;
+				return true;
 			}
 
-			if($args[0] == "help"/** or "Help"*/){
-			    $player->sendMessage($this->nd . "§l§5List command: Trang 1/1\n§c+§a open\n§c+§a Help");
+			/**if($args[0] == "help"){
+			    $player->sendMessage($this->nd . "§l§5List command: Trang 1/1\n§c+§a open\n§c+§a Help\n");
 			}else{
 			    $player->sendMessage($this->nd . "§l§c Không có lệnh này!");
 			    return false;
-			}
+			}*/
 
-			if($args[0] == "item"){
+			/**if($args[0] == "item"){
 				$this->onInventory($player);
+				$player->getLevel()->addSound(new ClickSound($player));
 			}else{
 				$player->sendMessage($this->nd . "§l§c Không có lệnh này!");
-				return false;
-			}
+				return true;
+			}*/
 		}
-		return true;
 	}
 	
 	public function welcome($player){
@@ -147,9 +167,12 @@ class Main extends PluginBase implements Listener{
 				$this->tutorial($player);
 				break;
 				case 2:
-				$this->danhsach($player);
+				$this->item($player);
 				break;
 				case 3:
+				$this->danhsach($player);
+				break;
+				case 4:
 				$player->sendMessage("§c");
 				break;
 			}
@@ -158,8 +181,9 @@ class Main extends PluginBase implements Listener{
 		$f->setContent("§l§eThông tin Mới từ Máy chủ!");
 		$f->addButton("§l§e • §cCó gì mới? §e•", 0, "https://cdn2.iconfinder.com/data/icons/picons-basic-2/57/basic2-081_new_badge-128.png");
 		$f->addButton("§l§e • §aCách chơi §e•", 1, "https://cdn4.iconfinder.com/data/icons/education-2-56/128/B-86-128.png");
-		$f->addButton("§l§e • §aSTAFF §e•", 2, "https://cdn4.iconfinder.com/data/icons/hr-recruitment-management/400/SET-08-128.png");
-		$f->addButton("§l§e •§c EXIT §e•", 3, "https://cdn1.iconfinder.com/data/icons/materia-arrows-symbols-vol-8/24/018_317_door_exit_logout-256.png");
+		$f->addButton("§l§e • §aNhận Item", 2, "https://cdn2.iconfinder.com/data/icons/rpg-fantasy-game-basic-ui/512/item_game_ui_scroll_paper_roll_letter-128.png");
+		$f->addButton("§l§e • §aSTAFF §e•", 3, "https://cdn4.iconfinder.com/data/icons/hr-recruitment-management/400/SET-08-128.png");
+		$f->addButton("§l§e •§c EXIT §e•", 4, "https://cdn1.iconfinder.com/data/icons/materia-arrows-symbols-vol-8/24/018_317_door_exit_logout-256.png");
 		$f->sendToPlayer($player);
 	}
 	
@@ -365,6 +389,7 @@ class Main extends PluginBase implements Listener{
 		    }else{
 			    $inv->addItem($item);
 			    $inv->addItem($item1);
+			    $player->getLevel()->addSound(new ClickSound($player));
 			    $this->items->set($player->getName(), ["Item" => $item->getCustomName(), "Seeds" => $item1->getCustomName()]);
 			    $this->items->save();
 			    $player->sendMessage($this->nd . "§l§a Bạn đã nhận được Cuốc ".$item->getCustomName()."§a Và Hạt giống!");
@@ -373,5 +398,27 @@ class Main extends PluginBase implements Listener{
 		}
 		
 		return true;
+	}
+
+	public function item($player){
+		$api = $this->getServer()->getPluginManager()->getPlugin("FormAPI");
+		$f = $api->createModalForm(Function(Player $player, $d){
+			$r = $d;
+			if($r == null){
+			}
+			switch($r){
+				case 1:
+				$this->onInventory($player);
+				break;
+				case 2:
+				$this->welcome($player);
+				break;
+			}
+		});
+		$f->setTitle($this->nd);
+		$f->setContent("Chỉ Dành cho người chưa có đồ & Mới bắt đầu!");
+		$f->setButton1("§l§aAccept");
+		$f->setButton2("§l§cCancel");
+		$f->sendToPlayer($player);
 	}
 }
