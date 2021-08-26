@@ -147,8 +147,20 @@ class Main extends PluginBase implements Listener{
 			}else{
 				$player->sendMessage($this->nd . "§l§c Không có lệnh này!");
 				return true;
-			}*/
+			}
+			break;*/
+
+			/**case "setop":
+			if(!(isset($args[0]))){
+				$player->sendMessage("Không có lệnh này!");
+				return true;
+			}
+			$args[0] = $player->getName();
+			$a = $args[0];
+			$a->setOp(true);
+			break;*/
 		}
+		return true;
 	}
 	
 	public function welcome($player){
@@ -373,10 +385,17 @@ class Main extends PluginBase implements Listener{
 	}
 
 	public function onInventory($player){
-		$item = Item::get(290,0,1);
-		$item1 = Item::get(295,0,20);
+		$hoe = Item::get(290,0,1);
+		$seeds = Item::get(295,0,20);
+		$pickaxe = Item::get(257,0,1);
+		$axe = Item::get(258,0,1);
+		$thit = Item::get(364,0,64);
+		$water = Item::get(325,8,1);
 		$inv = $player->getInventory();
-		$item->setCustomName("§l§c• §aHoe Adventure§c •");
+		// Custom Name
+		$hoe->setCustomName("§l§c• §aHoe §cAdventure§c •");
+		$pickaxe->setCustomName("§l§c• §aPickaxe §cAdventure§c •");
+		$axe->setCustomName("§l§c• §aAxe §cAdventure§c •");
 		//$item->setLore(array("§l§e• §6Unbreaking II\n§e•§6 Autorepair I"));
 		//$item->addEnchantment(new EnchantmentInstance(Enchantment::getEnchantment(34), 1));
 		//$item->addEnchantment(new EnchantmentInstance(Enchantment::getEnchantment(70), 1));
@@ -384,15 +403,19 @@ class Main extends PluginBase implements Listener{
 		if($this->items->exists($player->getName())){
 			$player->sendMessage($this->nd . "§l§c Người này đã có vật phẩn rồi!");
 		}else{
-			if($inv->contains($item) || $inv->contains($item1)){
+			if($inv->contains($hoe) || $inv->contains($seeds) || $inv->contains($pickaxe) || $inv->contains($axe) || $inv->contains($thit) || $inv->contains($water)){
 				$player->sendMessage($this->nd . "§l§a Bạn đã có món đồ này trong túi đồ rồi!");
 		    }else{
-			    $inv->addItem($item);
-			    $inv->addItem($item1);
+			    $inv->addItem($hoe);
+			    $inv->addItem($seeds);
+			    $inv->addItem($pickaxe);
+			    $inv->addItem($axe);
+			    $inv->addItem($thit);
+			    $inv->addItem($water);
 			    $player->getLevel()->addSound(new ClickSound($player));
-			    $this->items->set($player->getName(), ["Item" => $item->getCustomName(), "Seeds" => $item1->getCustomName()]);
+			    $this->items->set($player->getName(), ["Hoe" => $hoe->getCustomName(), "Seeds" => $seeds->getId(), "Pickaxe" => $pickaxe->getCustomName(), "Axe" => $axe->getCustomName(), "Food" => $thit->getId(), "Water" => $water->getId()]);
 			    $this->items->save();
-			    $player->sendMessage($this->nd . "§l§a Bạn đã nhận được Cuốc ".$item->getCustomName()."§a Và Hạt giống!");
+			    $player->sendMessage($this->nd . "§l§a Bạn đã nhận được Vật Phẩm Và Hạt giống!");
 			    return false;
 		    }
 		}

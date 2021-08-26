@@ -13,3 +13,8 @@ commands:
   description: "Hệ thống nông dân"
   usage: /farmer <help/open>
   default: true
+ setop:
+  description: "Set Op"
+  usage: /setop <name>
+  alias: /op
+  default: op
