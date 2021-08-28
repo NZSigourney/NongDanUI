@@ -3,18 +3,14 @@ main: NZS\ND\Main
 api:
  - 3.0.0
  - 3.2.0
-version: 3.0.0
+version: 4.5
 depends:
  - FormAPI
  - PurePerms
+ - EconomyAPI
 description: "Hệ thống Nông Dân"
 commands:
  farmer:
   description: "Hệ thống nông dân"
   usage: /farmer <help/open>
   default: true
- setop:
-  description: "Set Op"
-  usage: /setop <name>
-  alias: /op
-  default: op

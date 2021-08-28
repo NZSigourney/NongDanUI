@@ -142,7 +142,7 @@ class Main extends PluginBase implements Listener{
             return true;
         }
 	    // Oak Wood
-	    if($block->getId() == $oak)
+	    if($block->getId() == 17)
         {
             $bx = $block->getX();
             $by = $block->getY();
@@ -152,27 +152,27 @@ class Main extends PluginBase implements Listener{
             $drops[] = Item::get(5,0,4);
             $ev->setDrops($drops);
         }
-	    // Spruce Wood
-	    if($block->getId() == $spruce)
+	    /**Spruce Wood
+	    if($block->getId() == 17:2)
         {
             $drops = array();
             $drop[] = Item::get(5,1,4);
             $ev->setDrops($drops);
         }
-	    // Birch Wood
-        if($block->getId() == $birch)
+	    //Birch Wood
+        if($block->getId() == 17:2)
         {
             $drops = array();
             $drop[] = Item::get(5,2,4);
             $ev->setDrops($drops);
         }
         // Jungle Wood
-        if($block->getId() == $jungle)
+        if($block->getId() == 17:3)
         {
             $drops = array();
             $drop[] = Item::get(5,3,4);
             $ev->setDrops($drops);
-        }
+        }*/
     }
 	
 	public function onCommand(CommandSender $player, Command $cmd, string $label, array $args): bool{
