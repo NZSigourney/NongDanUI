@@ -122,6 +122,14 @@ class Main extends PluginBase implements Listener{
 	public function onBreak(BlockBreakEvent $ev){
 	    $player = $ev->getPlayer();
 	    $block = $ev->getBlock();
+
+	    // Wood
+        $oak = Item::get(17,0,0);
+        $spruce = Item::get(17,1,0);
+        $birch = Item::get(17,2,0);
+        $jungle = Item::get(17,3,0);
+        // End
+
 	    if($block->getId() == 2)
         {
             $bx = $block->getX();
@@ -133,14 +141,36 @@ class Main extends PluginBase implements Listener{
             $player->getInventory()->addItem(Item::get(3,0,2));
             return true;
         }
-	    if($block->getId() == 17)
+	    // Oak Wood
+	    if($block->getId() == $oak)
         {
             $bx = $block->getX();
             $by = $block->getY();
             $bz = $block->getZ();
             //$block->getLevel()->dropItem(new Vector3($bx,$by,$bz), Item::get(2,0,0));
             $drops = array();
-            $drops[] = Item::get(5,0,1);
+            $drops[] = Item::get(5,0,4);
+            $ev->setDrops($drops);
+        }
+	    // Spruce Wood
+	    if($block->getId() == $spruce)
+        {
+            $drops = array();
+            $drop[] = Item::get(5,1,4);
+            $ev->setDrops($drops);
+        }
+	    // Birch Wood
+        if($block->getId() == $birch)
+        {
+            $drops = array();
+            $drop[] = Item::get(5,2,4);
+            $ev->setDrops($drops);
+        }
+        // Jungle Wood
+        if($block->getId() == $jungle)
+        {
+            $drops = array();
+            $drop[] = Item::get(5,3,4);
             $ev->setDrops($drops);
         }
     }
