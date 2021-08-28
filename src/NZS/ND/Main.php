@@ -8,10 +8,12 @@ use pocketmine\{Player, Server};
 // Event
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\event\block\BlockBreakEvent;
 // config
 use pocketmine\utils\Config;
 // other plugin
 use jojoe7777\FormAPI;
+use onebone\economyapi\EconomyAPI;
 // Item
 use pocketmine\item\Item;
 use pocketmine\item\enchantment\EnchantmentInstance;
@@ -31,6 +33,8 @@ class Main extends PluginBase implements Listener{
 	public function onEnable(): void{
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		$this->getLogger()->info("Nông Dân System V1 by NZS (Tobi)");
+		$this->EconomyAPI = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI");
+		$this->eco = EconomyAPI::getInstance();
 
 		//Config
 		@mkdir($this->getDataFolder());
@@ -83,6 +87,7 @@ class Main extends PluginBase implements Listener{
 			$player->sendMessage($this->nd . "§l§a Chào mừng bạn đến với §6".$svName."§a! Hãy tiếp tục chơi vui vẻ nếu bạn muốn nhé !");
 		}else{
 			$this->getServer()->broadcastMessage($svName . ": §l§aNgười chơi §e".$name."§a Lần đầu vào Server Bắt đầu cày cuốc đi nào!");
+			$this->EconomyAPI->addMoney($player, + 60000);
 			$this->onInventory($player);
 			$this->welcome($player);
 			return true;
@@ -113,6 +118,32 @@ class Main extends PluginBase implements Listener{
 		/**$sound = "https:://www.youtube.com/watch?v=wJwQQHNGn5k&t=30s";
 		$player->getLevel()->addSound($sound);*/
 	}
+
+	public function onBreak(BlockBreakEvent $ev){
+	    $player = $ev->getPlayer();
+	    $block = $ev->getBlock();
+	    if($block->getId() == 2)
+        {
+            $bx = $block->getX();
+            $by = $block->getY();
+            $bz = $block->getZ();
+
+            $block->getLevel()->dropItem(new Vector3($bx,$by,$bz), Item::get(2,0,0));
+            //$block->getLevel()->setBlock(new Vector3($bx,$by,$bz), Block::get(0));
+            $player->getInventory()->addItem(Item::get(3,0,2));
+            return true;
+        }
+	    if($block->getId() == 17)
+        {
+            $bx = $block->getX();
+            $by = $block->getY();
+            $bz = $block->getZ();
+            //$block->getLevel()->dropItem(new Vector3($bx,$by,$bz), Item::get(2,0,0));
+            $drops = array();
+            $drops[] = Item::get(5,0,1);
+            $ev->setDrops($drops);
+        }
+    }
 	
 	public function onCommand(CommandSender $player, Command $cmd, string $label, array $args): bool{
 		switch($cmd->getName()){
