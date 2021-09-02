@@ -14,6 +14,7 @@ use pocketmine\utils\Config;
 // other plugin
 use jojoe7777\FormAPI;
 use onebone\economyapi\EconomyAPI;
+use NZS\ND\Command\DoiQuaCommand;
 // Item
 use pocketmine\item\Item;
 use pocketmine\item\enchantment\EnchantmentInstance;
@@ -37,21 +38,24 @@ class Main extends PluginBase implements Listener{
 		$this->eco = EconomyAPI::getInstance();
 
 		//Config
-		@mkdir($this->getDataFolder());
+		@mkdir($this->getDataFolder(), 0744, true);
 		$this->items = new Config($this->getDataFolder(). "Item.yml", Config::YAML);
 		$this->listOp = new Config($this->getDataFolder(). "ListSTAFF.yml", Config::YAML);
 		$this->pol = new Config($this->getDataFolder(). "Police.yml", Config::YAML);
-
+		$this->money = new Config($this->getDataFolder(). "Gem.yml", Config::YAML);
 		//Pureperms
 		$this->pp = $this->getServer()->getPluginManager()->getPlugin("PurePerms");
 		//$this->rank = $this->pp->getUserDataMgr()->getGroup();
+
+        //$this->getServer()->getCommandMap()->register("doiqua", new DoiQuaCommand($this));
 	}
 
 	public function onDisable(){
 		$this->listOp->save();
 		$this->items->save();
 		$this->pol->save();
-		$this->getServer()->getLogger()->info($this->nd . "§bSaved Data YML [Item, ListSTAFF, Police] Success");
+		$this->money->save();
+		$this->getServer()->getLogger()->info($this->nd . " §bSaved Data YML [Item, ListSTAFF, Police] Success");
 	}
 	
 	public function onLoad(){
@@ -65,12 +69,14 @@ class Main extends PluginBase implements Listener{
 		if(!$this->listOp->exists($name))
 		{
 			$rank = $this->pp->getUserDataMgr()->getGroup($player)->getName();
-			foreach($this->getServer()->getOnlinePlayers() as $p){
-				if($p->isOp()){
+			//foreach($this->getServer()->getOnlinePlayers() as $p){
+				if($player->isOp()){
 					$this->getServer()->getLogger()->info("§bSaved data username: ".$name." With rank ".$rank." !");
 					$this->listOp->set($name, $rank);
 			        $this->listOp->save();
-				}
+				}else{
+                    $this->getServer()->getLogger()->info("§bSaved data Guest: ".$name." With rank ".$rank." !");
+                }
 
 				if($rank == "Police"){
 					$this->getServer()->getLogger()->info("§bSaved data username: ".$name." => Police, At Plugin_Data\NDSystem\ListStaff!");
@@ -80,7 +86,7 @@ class Main extends PluginBase implements Listener{
 						return $this->listST($player);
 					}*/
 				}
-			}
+			//}
 		}
 
 		if($player->hasPlayedBefore() == true){
@@ -92,6 +98,11 @@ class Main extends PluginBase implements Listener{
 			$this->welcome($player);
 			return true;
 		}
+
+		if(!$this->money->exists($player->getName())){
+		    $this->money->set($player->getName(), 0);
+		    $this->money->save();
+        }
 
 		// setOp
 		/**if($player->isOp()){
@@ -152,27 +163,21 @@ class Main extends PluginBase implements Listener{
             $drops[] = Item::get(5,0,4);
             $ev->setDrops($drops);
         }
-	    /**Spruce Wood
-	    if($block->getId() == 17:2)
+
+	    // Block money
+        $item = Item::get(Item::DIAMOND_PICKAXE, 0, 1);
+	    if($player->getInventory()->getItemInHand()->getId() == 278)
         {
-            $drops = array();
-            $drop[] = Item::get(5,1,4);
-            $ev->setDrops($drops);
+            if($block->getId() == 1){
+               //if($ev->isCancelled()){}
+                $cost = rand(1, 5);
+                $this->EconomyAPI->addMoney($player->getName(), $cost);
+                if($this->money->exists($player->getName())){
+                    $this->money->set($player->getName(), $this->money->get($player->getName()) + $cost);
+                    $this->money->save();
+                }
+            }
         }
-	    //Birch Wood
-        if($block->getId() == 17:2)
-        {
-            $drops = array();
-            $drop[] = Item::get(5,2,4);
-            $ev->setDrops($drops);
-        }
-        // Jungle Wood
-        if($block->getId() == 17:3)
-        {
-            $drops = array();
-            $drop[] = Item::get(5,3,4);
-            $ev->setDrops($drops);
-        }*/
     }
 	
 	public function onCommand(CommandSender $player, Command $cmd, string $label, array $args): bool{
@@ -194,6 +199,37 @@ class Main extends PluginBase implements Listener{
 				$player->sendMessage($this->nd . "§l§c Không có lệnh này!");
 				return true;
 			}
+			break;
+
+            case "doiqua":
+                if(!($player instanceof Player)){
+                    $this->getLogger()->warning("Use in game!");
+                    return true;
+                }
+
+                if(!$this->money->exists($player->getName())){
+                   if($this->money->set($this->money->get($player->getName())) == 1000)
+                   {
+                       $rand = rand(1, 50);
+                       $this->EconomyAPI->addMoney($player, $rand);
+                       $this->money->set($player->getName(), $this->money->get($player->getName()) - 1000);
+                       $this->money->save();
+                       $player->sendMessage($player->getName() . "§c Đã trừ 1000 Điểm ra khỏi túi đồ của bạn!");
+
+                       $item = Item::get(278, 0, 1);
+                       $item->setCustomName("§lf>>§c•§f<< §bCúp ¶aMine§cSuon§f >>§c•§f<<");
+                       $item->setLore(array("UPDATING"));
+                       $player->getInventory()->addItem($item);
+                   }
+                }elseif($this->money->set($this->money->get($player->getName())) < 999){
+                    $player->sendMessage($this->nd . "§l§c Bạn không đủ điểm!");
+                }
+                break;
+
+            case "xemdiem":
+                $diem = $this->money->get($player->getName());
+                $player->sendMessage($this->nd . "§l§a Điểm Hiện tại: §b". $diem);
+                break;
 
 			/**if($args[0] == "help"){
 			    $player->sendMessage($this->nd . "§l§5List command: Trang 1/1\n§c+§a open\n§c+§a Help\n");
@@ -365,11 +401,29 @@ class Main extends PluginBase implements Listener{
 	}
 	
 	public function weather($player){
+        //$mua = $this->dataManager->getSeason($player);
 		$a = $this->getServer()->getPluginManager()->getPlugin("FormAPI");
 		$f = $a->createCustomForm(Function (Player $player, $d){
+
+		    /**switch($mua)
+            {
+                case "Xuân":
+                    $mua = "§aXuân";
+                    break;
+                case "Hạ":
+                    $mua = "§cHạ";
+                    break;
+                case "Thu":
+                    $mua = "§eThu";
+                    break;
+                case "Đông":
+                    $mua = "§bĐông";
+                    break;
+            }*/
 		});
 		$f->setTitle($this->nd);
-		$f->addLabel("§l§c•§a Không có gì đâu, đơn giản chỉ là... à mà thôi dang update mà hihi");
+		//$f->addLabel("§l§c•§a Mùa Hiện tại: ". $mua);
+		$f->addLabel("§l§c•§a Mùa Màn trong ".$this->getServer()->getMotd()."§a có 4 mùa: Xuân, Hạ, Thu, Đông.\n Mỗi mùa giá thành buôn bán trong shop sẽ thay đổi khác nhau");
 		$f->sendToPlayer($player);
 	}
 	

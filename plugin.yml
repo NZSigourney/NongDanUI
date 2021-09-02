@@ -14,3 +14,11 @@ commands:
   description: "Hệ thống nông dân"
   usage: /farmer <help/open>
   default: true
+ doiqua:
+  description: "Tích điểm đổi quà"
+  usage: /doiqua
+  default: true
+ xemdiem:
+   description: "Xem Điểm"
+   usage: /xemdiem
+   default: true
