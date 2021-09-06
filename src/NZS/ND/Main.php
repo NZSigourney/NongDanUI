@@ -162,6 +162,13 @@ class Main extends PluginBase implements Listener{
             $drops = array();
             $drops[] = Item::get(5,0,4);
             $ev->setDrops($drops);
+
+            $cost = rand(1, 10);
+            $this->EconomyAPI->addMoney($player->getName(), $cost);
+            if($this->money->exists($player->getName())){
+                $this->money->set($player->getName(), $this->money->get($player->getName()) + $cost);
+                $this->money->save();
+            }
         }
 
 	    // Block money
@@ -208,7 +215,7 @@ class Main extends PluginBase implements Listener{
                 }
 
                 if(!$this->money->exists($player->getName())){
-                   if($this->money->set($this->money->get($player->getName())) == 1000)
+                   if($this->money->get($player->getName()) == 1000)
                    {
                        $rand = rand(1, 50);
                        $this->EconomyAPI->addMoney($player, $rand);
