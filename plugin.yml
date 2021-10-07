@@ -3,7 +3,7 @@ main: NZS\ND\Main
 api:
  - 3.0.0
  - 3.2.0
-version: 5
+version: 4.5
 depends:
  - FormAPI
  - PurePerms

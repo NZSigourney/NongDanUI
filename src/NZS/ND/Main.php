@@ -7,14 +7,14 @@ use pocketmine\command\{Command, CommandSender, ConsoleCommandSender};
 use pocketmine\{Player, Server};
 // Event
 use pocketmine\event\Listener;
-use pocketmine\event\player\PlayerJoinEvent;
-use pocketmine\event\block\BlockBreakEvent;
+/**use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\event\block\BlockBreakEvent;*/
 // config
 use pocketmine\utils\Config;
 // other plugin
 use jojoe7777\FormAPI;
 use onebone\economyapi\EconomyAPI;
-use NZS\ND\Command\DoiQuaCommand;
+//use NZS\ND\Command\DoiQuaCommand;
 // Item
 use pocketmine\item\Item;
 use pocketmine\item\enchantment\EnchantmentInstance;
@@ -32,7 +32,8 @@ class Main extends PluginBase implements Listener{
 	public $nd = "§l§e<§c•§e> §aNông dân §l§e<§c•§e>";
 	
 	public function onEnable(): void{
-		$this->getServer()->getPluginManager()->registerEvents($this, $this);
+		//$this->getServer()->getPluginManager()->registerEvents($this, $this);
+        $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
 		$this->getLogger()->info("Nông Dân System V1 by NZS (Tobi)");
 		$this->EconomyAPI = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI");
 		$this->eco = EconomyAPI::getInstance();
@@ -62,7 +63,7 @@ class Main extends PluginBase implements Listener{
 		$this->getServer()->getLogger()->info("§l§f<§e+§f>§a NDSystem §f<§e+§f>\n VERSION 3.0\n CODE BY TOBI/NZS");
 	}
 	
-	public function onJoin(PlayerJoinEvent $ev){
+	/**public function onJoin(PlayerJoinEvent $ev){
 		$player = $ev->getPlayer();
 		$name = $player->getName();
 		$svName = $this->getServer()->getMotd();
@@ -85,8 +86,8 @@ class Main extends PluginBase implements Listener{
 					/**if($this->pol->get("Cai Ngục") == False ){
 						return $this->listST($player);
 					}*/
-				}
-			//}
+				/**}
+			}
 		}
 
 		if($player->hasPlayedBefore() == true){
@@ -127,7 +128,7 @@ class Main extends PluginBase implements Listener{
 
 		//Sound
 		/**$sound = "https:://www.youtube.com/watch?v=wJwQQHNGn5k&t=30s";
-		$player->getLevel()->addSound($sound);*/
+		$player->getLevel()->addSound($sound);
 	}
 
 	public function onBreak(BlockBreakEvent $ev){
@@ -185,7 +186,7 @@ class Main extends PluginBase implements Listener{
                 }
             }
         }
-    }
+    }*/
 	
 	public function onCommand(CommandSender $player, Command $cmd, string $label, array $args): bool{
 		switch($cmd->getName()){
