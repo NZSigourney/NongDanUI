@@ -68,13 +68,6 @@ class EventListener implements Listener
         $player = $ev->getPlayer();
         $block = $ev->getBlock();
 
-        // Wood
-        $oak = Item::get(17,0,0);
-        $spruce = Item::get(17,1,0);
-        $birch = Item::get(17,2,0);
-        $jungle = Item::get(17,3,0);
-        // End
-
         if($block->getId() == 2)
         {
             $bx = $block->getX();
@@ -106,7 +99,7 @@ class EventListener implements Listener
         }
 
         // Block money
-        $item = Item::get(Item::DIAMOND_PICKAXE, 0, 1);
+        //$item = Item::get(Item::DIAMOND_PICKAXE, 0, 1);
         if($player->getInventory()->getItemInHand()->getId() == 278)
         {
             if($block->getId() == 1){
